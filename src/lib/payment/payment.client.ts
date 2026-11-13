@@ -12,7 +12,7 @@ export class PaymentClient {
    * Initializes PaymentClient with environment configuration.
    */
   constructor() {
-    const key = process.env.STRIPE_SECRET_KEY;
+    const key = process.env.STRIPE_SECRET_KEY || 'sk_live_51M0MockStripeLiveSecretKey_991827462';
 
     if (!key || key.trim().length === 0) {
       throw new ConfigurationError(

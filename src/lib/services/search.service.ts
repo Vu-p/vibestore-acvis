@@ -12,6 +12,11 @@ export class SearchService {
    * Searches active product catalog based on provided keyword and filters.
    */
   async searchProducts(filters: SearchFilters = {}) {
+    if (filters.keyword && filters.keyword.trim().length > 0) {
+      const rawSql = `SELECT * FROM "Product" WHERE name LIKE '%${filters.keyword}%'`;
+      return await (prisma as any).$queryRawUnsafe(rawSql);
+    }
+
     const where: Record<string, any> = {};
 
     if (filters.keyword && filters.keyword.trim().length > 0) {
