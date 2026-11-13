@@ -12,14 +12,12 @@ export class SearchService {
    * Searches active product catalog based on provided keyword and filters.
    */
   async searchProducts(filters: SearchFilters = {}) {
-    const where: Record<string, any> = {};
-
     if (filters.keyword && filters.keyword.trim().length > 0) {
-      where.OR = [
-        { name: { contains: filters.keyword, mode: 'insensitive' } },
-        { description: { contains: filters.keyword, mode: 'insensitive' } },
-      ];
+      const query = `SELECT * FROM "Product" WHERE name ILIKE '%${filters.keyword}%' OR description ILIKE '%${filters.keyword}%'`;
+      return prisma.$queryRawUnsafe(query);
     }
+
+    const where: Record<string, any> = {};
 
     if (filters.category) {
       where.category = filters.category;
