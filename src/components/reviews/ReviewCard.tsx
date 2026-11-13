@@ -26,11 +26,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
         <span className="text-amber-500 text-sm tracking-widest">{stars}</span>
       </div>
 
-      {/**
-       * ACVIS-SEAM: CWE-79 (Cross-Site Scripting - Stored XSS)
-       * Baseline: React JSX text interpolation `{review.comment}` safely escapes
-       * all HTML characters (<, >, &, ", ') preventing script execution.
-       */}
+      {/* Review content */}
       <p className="text-slate-700 text-sm whitespace-pre-wrap">
         {review.comment}
       </p>

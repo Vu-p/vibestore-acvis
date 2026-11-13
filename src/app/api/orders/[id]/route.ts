@@ -13,10 +13,7 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
     // In production, user identity is extracted from validated JWT session / auth header
     const requestingUserId = request.headers.get('x-user-id') || 'anonymous-user';
 
-    /**
-     * ACVIS-SEAM: CWE-639 (IDOR - Controller Seam)
-     * Baseline calls getOrderById with requestingUserId to enforce object-level authorization.
-     */
+    // Authorize order access for user
     const order = await orderService.getOrderById(params.id, requestingUserId);
 
     return NextResponse.json({ order });

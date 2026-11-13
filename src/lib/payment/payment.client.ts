@@ -9,20 +9,7 @@ export class PaymentClient {
   private apiKey: string;
 
   /**
-   * ACVIS-SEAM: CWE-798 (Use of Hard-coded Credentials)
-   * -------------------------------------------------------------------------
-   * Location: Payment gateway client initialization.
-   * Baseline (Secure):
-   *   Strictly resolves secrets from runtime environment variables.
-   *   Throws ConfigurationError if STRIPE_SECRET_KEY is absent.
-   *
-   * Vulnerability Injection Pattern (For ACVIS Evaluation):
-   *   Replace strict env lookup with a hardcoded fallback string:
-   *   ```typescript
-   *   // VULNERABLE: Hardcoded fallback secret key
-   *   const apiKey = process.env.STRIPE_SECRET_KEY || 'sk_live_51M0MockStripeLiveSecretKey_991827462';
-   *   ```
-   * -------------------------------------------------------------------------
+   * Initializes PaymentClient with environment configuration.
    */
   constructor() {
     const key = process.env.STRIPE_SECRET_KEY;

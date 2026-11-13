@@ -47,21 +47,7 @@ export class OrderService {
   }
 
   /**
-   * ACVIS-SEAM: CWE-639 (Insecure Direct Object Reference - IDOR)
-   * -------------------------------------------------------------------------
-   * Location: Order lookup and tenant authorization check.
-   * Baseline (Secure):
-   *   Validates that the requesting user identity (`requestingUserId`) strictly
-   *   matches `order.userId`. Throws ForbiddenError if an unauthorized caller attempts
-   *   to access another user's invoice or order records.
-   *
-   * Vulnerability Injection Pattern (For ACVIS Evaluation):
-   *   Remove the authorization ownership check:
-   *   ```typescript
-   *   // VULNERABLE IDOR: Directly returning order without checking user ownership
-   *   return order;
-   *   ```
-   * -------------------------------------------------------------------------
+   * Retrieves an order by ID ensuring ownership access for the requesting user.
    */
   async getOrderById(orderId: string, requestingUserId: string) {
     const order = await prisma.order.findUnique({

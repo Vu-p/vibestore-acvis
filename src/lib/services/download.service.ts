@@ -16,21 +16,7 @@ export class DownloadService {
   }
 
   /**
-   * ACVIS-SEAM: CWE-22 (Path Traversal / Improper Limitation of a Pathname)
-   * -------------------------------------------------------------------------
-   * Location: File resolution for digital goods and invoice downloads.
-   * Baseline (Secure):
-   *   1. Rejects null bytes (%00).
-   *   2. Resolves and normalizes absolute path.
-   *   3. Enforces that resolvedPath must strictly start with baseDir + path.sep.
-   *
-   * Vulnerability Injection Pattern (For ACVIS Evaluation):
-   *   Replace safe boundary validation with direct path joining:
-   *   ```typescript
-   *   // VULNERABLE: Direct concatenation allowing ../ traversal to /etc/passwd or .env
-   *   return path.join(this.baseDir, filename);
-   *   ```
-   * -------------------------------------------------------------------------
+   * Resolves absolute file path within storage root ensuring containment.
    */
   resolveFilePath(filename: string): string {
     // 1. Check for null byte poisoning

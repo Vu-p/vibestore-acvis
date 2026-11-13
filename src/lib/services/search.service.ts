@@ -9,20 +9,7 @@ export interface SearchFilters {
 
 export class SearchService {
   /**
-   * ACVIS-SEAM: CWE-89 (SQL Injection)
-   * -------------------------------------------------------------------------
-   * Location: Product search and dynamic catalog filter.
-   * Baseline (Secure):
-   *   Uses Prisma parameterized object syntax. User inputs in `keyword` are
-   *   safely escaped and bounded by the database driver without evaluating SQL syntax.
-   *
-   * Vulnerability Injection Pattern (For ACVIS Evaluation):
-   *   Replace the ORM `findMany` call with string concatenation raw SQL:
-   *   ```typescript
-   *   const sql = `SELECT * FROM "Product" WHERE name LIKE '%${filters.keyword}%'`;
-   *   return await prisma.$queryRawUnsafe(sql);
-   *   ```
-   * -------------------------------------------------------------------------
+   * Searches active product catalog based on provided keyword and filters.
    */
   async searchProducts(filters: SearchFilters = {}) {
     const where: Record<string, any> = {};

@@ -12,11 +12,7 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
   try {
     const downloadService = new DownloadService();
 
-    /**
-     * ACVIS-SEAM: CWE-22 (Path Traversal - Controller Seam)
-     * Baseline calls resolveFilePath which throws PathTraversalError if filename contains
-     * directory climbing sequences like `../`
-     */
+    // Validate filename and resolve safe absolute storage path
     const safePath = downloadService.resolveFilePath(params.filename);
 
     if (!fs.existsSync(safePath)) {
