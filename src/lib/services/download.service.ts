@@ -43,10 +43,11 @@ export class DownloadService {
       throw new PathTraversalError(`Directory traversal payload rejected: "${filename}"`);
     }
 
-    // 3. Resolve path and ensure it stays inside base storage directory
+    // 3. Resolve path and ensure it stays strictly inside base storage directory
     const resolvedPath = path.resolve(this.baseDir, filename);
+    const normalizedBase = this.baseDir.endsWith(path.sep) ? this.baseDir : this.baseDir + path.sep;
 
-    if (!resolvedPath.startsWith(this.baseDir)) {
+    if (resolvedPath !== this.baseDir && !resolvedPath.startsWith(normalizedBase)) {
       throw new PathTraversalError(
         `Path traversal violation: Target "${resolvedPath}" escapes base directory "${this.baseDir}".`
       );

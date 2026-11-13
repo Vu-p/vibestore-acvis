@@ -13,6 +13,7 @@ This directory contains reproducible test cases designed specifically to evaluat
 | **03** | **CWE-22** | Path Traversal | Split-Commit Flaw (2 Commits) | **Commit 1:** `src/lib/utils/path.helper.ts`<br>**Commit 2:** `src/app/api/downloads/[filename]/route.ts` |
 | **04** | **CWE-798** | Hardcoded Credentials | Single-File Config Commit | `src/lib/payment/payment.client.ts` |
 | **05** | **CWE-79** | Stored XSS | Single-File UI Commit | `src/components/reviews/ReviewCard.tsx` |
+| **06** | **CWE-89 +<br>CWE-639 +<br>CWE-798** | Compound Multi-Flaw<br>(SQLi + IDOR + Secret) | **Compound Multi-CWE Commit**<br>*(3 distinct flaws in 1 commit)* | `src/lib/services/search.service.ts`<br>`src/lib/services/order.service.ts`<br>`src/lib/payment/payment.client.ts` |
 
 ---
 

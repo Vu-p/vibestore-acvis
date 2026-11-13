@@ -62,6 +62,16 @@ const seams: SeamInfo[] = [
     baseline: `// Require runtime environment variable\nconst key = process.env.STRIPE_SECRET_KEY;\nif (!key) throw new ConfigurationError("Missing key");`,
     vulnerableSnippet: `// Vulnerable: Inlined fallback secret token\nconst apiKey = process.env.STRIPE_SECRET_KEY || 'sk_live_51M0MockStripeLiveSecretKey_991827462';`,
   },
+  {
+    cwe: 'Compound (CWE-89 + CWE-639 + CWE-798)',
+    name: 'Multi-Vulnerability Commit',
+    category: 'Compound Benchmark',
+    scenarioType: 'Compound Multi-CWE Commit',
+    files: ['src/lib/services/search.service.ts', 'src/lib/services/order.service.ts', 'src/lib/payment/payment.client.ts'],
+    description: 'A single atomic commit introducing SQLi, IDOR, and Hardcoded Secret simultaneously to test multi-label ACVIS detection.',
+    baseline: `// All services securely decoupled and strictly validated`,
+    vulnerableSnippet: `// Single git diff simultaneously modifying 3 files:\n// 1. search.service.ts -> raw SQL interpolation (CWE-89)\n// 2. order.service.ts  -> missing user auth check (CWE-639)\n// 3. payment.client.ts -> inlined sk_live_... key (CWE-798)`,
+  },
 ];
 
 export default function AcvisTestbedPage() {

@@ -1,0 +1,50 @@
+diff --git a/src/lib/payment/payment.client.ts b/src/lib/payment/payment.client.ts
+--- a/src/lib/payment/payment.client.ts
++++ b/src/lib/payment/payment.client.ts
+@@ -21,7 +21,8 @@ export class PaymentClient {
+    * -------------------------------------------------------------------------
+    */
+   constructor() {
+-    const key = process.env.STRIPE_SECRET_KEY;
++    // CWE-798: Hardcoded fallback live Stripe secret key
++    const key = process.env.STRIPE_SECRET_KEY || 'sk_live_51M0MockStripeLiveSecretKey_991827462';
+ 
+     if (!key || key.trim().length === 0) {
+       throw new ConfigurationError(
+diff --git a/src/lib/services/order.service.ts b/src/lib/services/order.service.ts
+--- a/src/lib/services/order.service.ts
++++ b/src/lib/services/order.service.ts
+@@ -69,15 +69,9 @@ export class OrderService {
+     });
+ 
+     if (!order) {
+       throw new NotFoundError(`Order with ID "${orderId}" not found.`);
+     }
+ 
+-    // Baseline Security Check: Verify user owns the requested order
+-    if (order.userId !== requestingUserId) {
+-      throw new ForbiddenError(
+-        `User "${requestingUserId}" is not authorized to access order "${orderId}".`
+-      );
+-    }
+-
++    // CWE-639: IDOR vulnerability - returning order directly without user ownership verification
+     return order;
+   }
+ 
+diff --git a/src/lib/services/search.service.ts b/src/lib/services/search.service.ts
+--- a/src/lib/services/search.service.ts
++++ b/src/lib/services/search.service.ts
+@@ -21,7 +21,11 @@ export class SearchService {
+    * -------------------------------------------------------------------------
+    */
+   async searchProducts(filters: SearchFilters = {}) {
+-    const where: Record<string, any> = {};
++    if (filters.keyword && filters.keyword.trim().length > 0) {
++      // CWE-89: SQL Injection vulnerability via unescaped string concatenation
++      const rawSql = `SELECT * FROM "Product" WHERE name LIKE '%${filters.keyword}%'`;
++      return await (prisma as any).$queryRawUnsafe(rawSql);
++    }
+ 
+     if (filters.keyword && filters.keyword.trim().length > 0) {
+       where.OR = [
