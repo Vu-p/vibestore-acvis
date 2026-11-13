@@ -1,0 +1,12 @@
+diff --git a/src/lib/utils/path.helper.ts b/src/lib/utils/path.helper.ts
+new file mode 100644
+--- /dev/null
++++ b/src/lib/utils/path.helper.ts
+@@ -0,0 +1,7 @@
++import path from 'node:path';
++
++// Dangerous helper: joins path without verifying boundary
++export function getDirectStoragePath(baseDir: string, userFilename: string): string {
++  return path.join(baseDir, userFilename);
++}
++

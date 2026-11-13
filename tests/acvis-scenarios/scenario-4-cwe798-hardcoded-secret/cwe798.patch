@@ -1,0 +1,13 @@
+diff --git a/src/lib/payment/payment.client.ts b/src/lib/payment/payment.client.ts
+--- a/src/lib/payment/payment.client.ts
++++ b/src/lib/payment/payment.client.ts
+@@ -21,7 +21,8 @@ export class PaymentClient {
+    * -------------------------------------------------------------------------
+    */
+   constructor() {
+-    const key = process.env.STRIPE_SECRET_KEY;
++    // Vulnerable: Hardcoded live fallback API secret
++    const key = process.env.STRIPE_SECRET_KEY || 'sk_live_51M0MockProductionStripeKey9918237_SECRET';
+ 
+     if (!key || key.trim().length === 0) {
+       throw new ConfigurationError(

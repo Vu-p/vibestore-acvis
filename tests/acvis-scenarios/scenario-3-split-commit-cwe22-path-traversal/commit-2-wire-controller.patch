@@ -1,0 +1,27 @@
+diff --git a/src/app/api/downloads/[filename]/route.ts b/src/app/api/downloads/[filename]/route.ts
+--- a/src/app/api/downloads/[filename]/route.ts
++++ b/src/app/api/downloads/[filename]/route.ts
+@@ -1,5 +1,6 @@
+ import { NextRequest, NextResponse } from 'next/server';
+ import { DownloadService, PathTraversalError } from '@/lib/services/download.service';
++import { getDirectStoragePath } from '@/lib/utils/path.helper';
+ import fs from 'node:fs';
+ 
+ interface RouteContext {
+@@ -10,13 +11,9 @@ interface RouteContext {
+ export async function GET(request: NextRequest, { params }: RouteContext) {
+   try {
+     const downloadService = new DownloadService();
+-
+-    /**
+-     * ACVIS-SEAM: CWE-22 (Path Traversal - Controller Seam)
+-     */
+-    const safePath = downloadService.resolveFilePath(params.filename);
+-
+-    if (!fs.existsSync(safePath)) {
++    // Vulnerable: Using unvalidated direct path helper
++    const unsafePath = getDirectStoragePath('./storage', params.filename);
++    if (!fs.existsSync(unsafePath)) {
+       return NextResponse.json({ error: 'Requested file not found.' }, { status: 404 });
+     }
+ 

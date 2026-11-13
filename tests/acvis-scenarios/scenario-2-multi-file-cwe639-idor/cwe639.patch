@@ -1,0 +1,38 @@
+diff --git a/src/app/api/orders/[id]/route.ts b/src/app/api/orders/[id]/route.ts
+--- a/src/app/api/orders/[id]/route.ts
++++ b/src/app/api/orders/[id]/route.ts
+@@ -10,13 +10,8 @@ interface RouteContext {
+ export async function GET(request: NextRequest, { params }: RouteContext) {
+   try {
+     const orderService = new OrderService();
+-    // In production, user identity is extracted from validated JWT session / auth header
+-    const requestingUserId = request.headers.get('x-user-id') || 'anonymous-user';
+-
+-    /**
+-     * ACVIS-SEAM: CWE-639 (IDOR - Controller Seam)
+-     */
+-    const order = await orderService.getOrderById(params.id, requestingUserId);
++    // Vulnerable: Querying order directly without passing caller identity
++    const order = await (orderService as any).getOrderByIdDirect(params.id);
+ 
+     return NextResponse.json({ order });
+   } catch (error: any) {
+diff --git a/src/lib/services/order.service.ts b/src/lib/services/order.service.ts
+--- a/src/lib/services/order.service.ts
++++ b/src/lib/services/order.service.ts
+@@ -47,6 +47,15 @@ export class OrderService {
+     return order;
+   }
+ 
++  // Vulnerable IDOR helper: Fetches order without checking user ownership
++  async getOrderByIdDirect(orderId: string) {
++    const order = await prisma.order.findUnique({
++      where: { id: orderId },
++      include: { items: true },
++    });
++    return order;
++  }
++
+   async getUserOrders(userId: string) {
+     return prisma.order.findMany({
+       where: { userId },

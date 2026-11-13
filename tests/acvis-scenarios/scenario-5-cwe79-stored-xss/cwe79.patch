@@ -1,0 +1,18 @@
+diff --git a/src/components/reviews/ReviewCard.tsx b/src/components/reviews/ReviewCard.tsx
+--- a/src/components/reviews/ReviewCard.tsx
++++ b/src/components/reviews/ReviewCard.tsx
+@@ -28,9 +28,11 @@ export function ReviewCard({ review }: ReviewCardProps) {
+        * Baseline: React JSX text interpolation `{review.comment}` safely escapes
+        * all HTML characters (<, >, &, ", ') preventing script execution.
+        */
+-      <p className="text-slate-700 text-sm whitespace-pre-wrap">
+-        {review.comment}
+-      </p>
++      // Vulnerable: Unescaped HTML rendering triggering Stored XSS
++      <div
++        className="text-slate-700 text-sm whitespace-pre-wrap"
++        dangerouslySetInnerHTML={{ __html: review.comment }}
++      />
+ 
+       <span className="text-xs text-slate-400 block pt-1">
+         Posted on {new Date(review.createdAt).toLocaleDateString()}
