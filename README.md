@@ -1,94 +1,104 @@
-# ts-node-app
+# VibeStore - Digital Marketplace & ACVIS Vulnerability Testbed
 
-A TypeScript Node.js project pre-configured with **Matt Pocock's Agent Skills** (`mattpocock/skills`) for engineering-grade AI pair programming.
+A production-grade, Vercel-optimized full-stack digital goods e-commerce marketplace built with **Next.js App Router**, **TypeScript**, and **Prisma ORM (PostgreSQL)**. 
 
----
-
-## 🛠 Tech Stack
-
-- **Language:** TypeScript 5.x (ESM, `NodeNext`, `strict: true`)
-- **Runtime:** Node.js (v20+)
-- **Testing:** Node.js built-in test runner (`node:test`, `node:assert`)
-- **Dev Runner:** `tsx` for hot-reloading development
-- **Agent Workflows:** Matt Pocock Skills (`.agents/skills/`)
+Engineered with architectural seams (`ACVIS-SEAM`) and pre-configured patch sets to evaluate **ACVIS** (Automated Code Vulnerability Intelligence & Verified Remediation) on production `git diff` commits.
 
 ---
 
-## 📁 Project Structure
+## 🚀 Tech Stack
 
-```text
-ts-node-app/
-├── .agents/skills/          # Matt Pocock's skills (39 skills)
-├── .scratch/                # Local markdown issue tracking & specs
-├── docs/
-│   ├── adr/                 # Architecture Decision Records
-│   │   └── 0001-init-project.md
-│   └── agents/              # Matt Pocock skills configuration
-│       ├── domain.md
-│       ├── issue-tracker.md
-│       └── triage-labels.md
-├── src/
-│   ├── app.ts               # Core application logic & types
-│   ├── index.ts             # Entry point
-│   └── tests/
-│       └── app.test.ts      # Unit tests
-├── AGENTS.md                # Agent guidelines & instructions
-├── GLOSSARY.md              # Domain terminology
-├── package.json
-├── tsconfig.json
-└── README.md
+- **Framework:** Next.js 14/15 (App Router, Server Actions, API Route Handlers)
+- **Language:** TypeScript 5.6+ (`strict: true`, modern ESM)
+- **Styling:** Tailwind CSS & PostCSS
+- **Database:** PostgreSQL (Neon / Supabase / Vercel Postgres) via Prisma ORM
+- **Testing:** Vitest (Test-Driven Development with Red-Green-Refactor)
+- **Deployment:** Vercel (zero-config, standalone serverless output)
+- **Agent Workflows:** 39 Matt Pocock Skills (`.agents/skills/`)
+
+---
+
+## 🛡️ ACVIS Vulnerability Seams Matrix
+
+All baseline code in the `master` branch is **100% secure**. Prepared vulnerability patch sets are provided under `tests/acvis-scenarios/`:
+
+| Scenario | CWE | Vulnerability Class | Topology | Target Files |
+| :--- | :--- | :--- | :--- | :--- |
+| **01** | **CWE-89** | SQL Injection | Single-File | `src/lib/services/search.service.ts` |
+| **02** | **CWE-639** | IDOR (Broken Object Level Auth) | Multi-File | `src/app/api/orders/[id]/route.ts`<br>`src/lib/services/order.service.ts` |
+| **03** | **CWE-22** | Path Traversal / Arbitrary File Read | Split-Commit (2 Commits) | **Commit 1:** `src/lib/utils/path.helper.ts`<br>**Commit 2:** `src/app/api/downloads/[filename]/route.ts` |
+| **04** | **CWE-798** | Hardcoded Credentials / Secrets | Single-File | `src/lib/payment/payment.client.ts` |
+| **05** | **CWE-79** | Stored Cross-Site Scripting (XSS) | Single-File UI | `src/components/reviews/ReviewCard.tsx` |
+
+---
+
+## 🛠️ Testing ACVIS on Git Diffs
+
+To simulate a commit containing a vulnerability for ACVIS evaluation:
+
+```bash
+# 1. Create a test branch
+git checkout -b test/acvis-eval-cwe89
+
+# 2. Apply the desired patch
+git apply tests/acvis-scenarios/scenario-1-single-file-cwe89-sqli/cwe89.patch
+
+# 3. Check the git diff that ACVIS will inspect
+git diff
+
+# 4. Commit to trigger ACVIS
+git commit -am "test: introduce dynamic SQL search filter"
+
+# 5. Push to GitHub/Vercel for ACVIS webhook execution
+git push origin test/acvis-eval-cwe89
 ```
 
+See [tests/acvis-scenarios/README.md](tests/acvis-scenarios/README.md) for full instructions on multi-file and split-commit simulations.
+
 ---
 
-## 🚀 Getting Started
+## 💻 Local Development & TDD
 
-### 1. Install Dependencies
+### Install Dependencies
 ```bash
 npm install
 ```
 
-### 2. Development Mode
-Run with automatic restart on file changes:
+### Configure Environment Variables
+Copy `.env.example` to `.env`:
 ```bash
-npm run dev
+cp .env.example .env
 ```
 
-### 3. Build & Run
+### Run Tests (Vitest)
 ```bash
-# Compile TypeScript to dist/
-npm run build
-
-# Run production build
-npm start
-```
-
-### 4. Run Tests
-```bash
+# Single test run
 npm test
+
+# Watch mode for TDD
+npm run test:watch
 ```
 
-### 5. Type Check
+### Typecheck
 ```bash
 npm run typecheck
 ```
 
+### Run Dev Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) to view VibeStore and [http://localhost:3000/acvis-testbed](http://localhost:3000/acvis-testbed) for the ACVIS Testbed dashboard.
+
 ---
 
-## 🤖 Available Matt Pocock Skills
+## 🌐 Deploying to Vercel
 
-Installed under `.agents/skills/`:
-
-| Skill | Purpose |
-| :--- | :--- |
-| `/ask-matt` | Skill router: helps choose the right workflow for your goal |
-| `/grill-with-docs` | Interactive interview stress-testing your design while generating ADRs & glossary |
-| `/grill-me` | Rigorous interview to sharpen ideas and edge cases |
-| `/to-spec` | Synthesize current conversation into a formal specification document |
-| `/to-tickets` | Break specification down into granular, actionable tickets |
-| `/implement` | Execute spec implementation step-by-step |
-| `/tdd` | Test-driven development loop (Red-Green-Refactor) |
-| `/code-review` | Standards & spec compliance review using parallel sub-agents |
-| `/diagnosing-bugs` | Structured diagnosis loop for stubborn bugs |
-| `/domain-modeling` | Maintain and sharpen `GLOSSARY.md` and ADRs |
-| `/setup-matt-pocock-skills`| Configuration skill for tracker & domain docs |
+1. Push your repository to GitHub / GitLab.
+2. Import the project in your [Vercel Dashboard](https://vercel.com/new).
+3. Set Environment Variables:
+   - `DATABASE_URL`: Your PostgreSQL connection string (from Neon, Supabase, or Vercel Postgres).
+   - `JWT_SECRET`: Any 32+ character random string.
+   - `STRIPE_SECRET_KEY`: Stripe API key (or mock key).
+   - `STORAGE_DIR`: `./storage`
+4. Click **Deploy**. Vercel will automatically run `prisma generate && next build`.
