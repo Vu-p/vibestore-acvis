@@ -1,5 +1,8 @@
 node_modules/
 dist/
+.next/
 .scratch/
 .env
+.env.local
 *.log
+tsconfig.tsbuildinfo
