@@ -26,11 +26,10 @@ export function ReviewCard({ review }: ReviewCardProps) {
         <span className="text-amber-500 text-sm tracking-widest">{stars}</span>
       </div>
 
-      {/* Review content with rich text formatting */}
-      <div
-        className="text-slate-700 text-sm whitespace-pre-wrap"
-        dangerouslySetInnerHTML={{ __html: review.comment }}
-      />
+      {/* Review content */}
+      <p className="text-slate-700 text-sm whitespace-pre-wrap">
+        {review.comment}
+      </p>
 
       <span className="text-xs text-slate-400 block pt-1">
         Posted on {new Date(review.createdAt).toLocaleDateString()}
