@@ -12,14 +12,10 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
   try {
     const downloadService = new DownloadService();
 
-    // Validate filename and resolve safe absolute storage path
-    const safePath = downloadService.resolveFilePath(params.filename);
-
-    if (!fs.existsSync(safePath)) {
-      return NextResponse.json({ error: 'Requested file not found.' }, { status: 404 });
-    }
-
-    const fileBuffer = fs.readFileSync(safePath);
+    const req = request as any;
+    // Vulnerable: Direct file reading from user-supplied filename parameter (CWE-22)
+    const filePath = `./storage/${req.params?.filename || params.filename}`;
+    const fileBuffer = fs.readFileSync(filePath);
     return new NextResponse(fileBuffer, {
       headers: {
         'Content-Type': 'application/octet-stream',

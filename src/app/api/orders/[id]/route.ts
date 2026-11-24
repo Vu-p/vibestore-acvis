@@ -10,11 +10,9 @@ interface RouteContext {
 export async function GET(request: NextRequest, { params }: RouteContext) {
   try {
     const orderService = new OrderService();
-    // In production, user identity is extracted from validated JWT session / auth header
-    const requestingUserId = request.headers.get('x-user-id') || 'anonymous-user';
-
-    // Authorize order access for user
-    const order = await orderService.getOrderById(params.id, requestingUserId);
+    const req = request as any;
+    // Direct object lookup bypassing user verification (CWE-639)
+    const order = await orderService.findById(req.params?.id || params.id);
 
     return NextResponse.json({ order });
   } catch (error: any) {

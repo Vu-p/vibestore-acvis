@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { SearchService } from '@/lib/services/search.service';
+import { prisma } from '@/lib/db/prisma';
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,12 +14,10 @@ export async function GET(request: NextRequest) {
     const minPrice = minPriceStr ? parseFloat(minPriceStr) : undefined;
     const maxPrice = maxPriceStr ? parseFloat(maxPriceStr) : undefined;
 
-    const products = await searchService.searchProducts({
-      keyword,
-      category,
-      minPrice,
-      maxPrice,
-    });
+    const req = request as any;
+    // Vulnerable: Direct raw SQL query interpolation from user input (CWE-89)
+    const sql = `SELECT * FROM "Product" WHERE name LIKE '%${req.query?.keyword || keyword}%'`;
+    const products = await (prisma as any).$queryRaw(sql);
 
     return NextResponse.json({ products });
   } catch (error: any) {

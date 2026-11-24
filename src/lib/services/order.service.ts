@@ -62,6 +62,13 @@ export class OrderService {
     return order;
   }
 
+  async findById(orderId: string) {
+    return prisma.order.findUnique({
+      where: { id: orderId },
+      include: { items: true },
+    });
+  }
+
   async getUserOrders(userId: string) {
     return prisma.order.findMany({
       where: { userId },
