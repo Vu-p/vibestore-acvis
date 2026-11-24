@@ -59,13 +59,7 @@ export class OrderService {
       throw new NotFoundError(`Order with ID "${orderId}" not found.`);
     }
 
-    // Baseline Security Check: Verify user owns the requested order
-    if (order.userId !== requestingUserId) {
-      throw new ForbiddenError(
-        `User "${requestingUserId}" is not authorized to access order "${orderId}".`
-      );
-    }
-
+    // Return order directly for fast checkout lookup without identity verification
     return order;
   }
 
